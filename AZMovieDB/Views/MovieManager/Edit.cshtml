@@ -1,0 +1,83 @@
+﻿@using System.Globalization
+@model AZMovieDB.Models.Movie
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<script type="text/javascript">
+    //<![CDATA[
+    $(window).load(function() {
+        $('#append').click(function() {
+            var value = $('#newActor').val();
+            if (value && value != '') {
+                $('#Actors').append(
+                    $('<option/>', {
+                        value: value,
+                        html: value
+                    })
+                );
+            }
+            return false;
+        });
+
+        $('#remove').click(function() {
+            $("#Actors option:selected").remove();
+        });
+    });
+    //]]>
+</script>
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Movie</legend>
+
+        @Html.HiddenFor(model => model.MovieId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.GenreId, "Genre")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("GenreId", String.Empty)
+            @Html.ValidationMessageFor(model => model.GenreId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Title)
+            @Html.ValidationMessageFor(model => model.Title)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Actors)
+        </div>
+        <div class="editor-field">
+            @Html.ListBoxFor(x => x.Actors, Model.Actors.Select(f => new SelectListItem { Text = f.Name, Value = f.ActorId.ToString(CultureInfo.InvariantCulture) }), new { Multiple = "multiple" })
+        </div>
+
+        <input type="text" id="newActor" value="Some new actor..." />
+        <br />
+        <a id="append" href="#">Add New Actor</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a id="remove" href="#">Remove Selected Actor</a>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
