@@ -31,7 +31,10 @@ namespace AZMovieDB.Controllers
         // GET: /Movie/Details/5
         public ActionResult Details(int id)
         {
-            var movie = _movieDb.Movies.Find(id);
+            var movie = _movieDb.Movies
+                             .Include("Actors")
+                             .Include("Genre")
+                             .SingleOrDefault(m => m.MovieId == id);
 
             return View(movie);
         }

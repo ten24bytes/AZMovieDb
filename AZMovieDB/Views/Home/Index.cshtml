@@ -1,5 +1,16 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@model IEnumerable<AZMovieDB.Models.Movie>
+
+@{
+    ViewBag.Title = "Welcome to AZMovieDb";
 }
 
-<h2>This is the Home Page</h2>
+<h2>Welcome to AZ Movie Database</h2>
+
+<p>The following movies are in our database:</p>
+
+<ul>
+    @foreach (var movie in Model)
+    {
+        <li>@Html.ActionLink(movie.Title, "Details", "Movie", new { id = movie.MovieId }, null)</li>
+    }
+</ul>

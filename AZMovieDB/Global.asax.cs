@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using AZMovieDB.App_Start;
+using HibernatingRhinos.Profiler.Appender.EntityFramework;
 
 namespace AZMovieDB
 {
@@ -13,6 +14,7 @@ namespace AZMovieDB
     {
         protected void Application_Start()
         {
+            EntityFrameworkProfiler.Initialize();
             System.Data.Entity.Database.SetInitializer(new Models.SampleData());
 
             AreaRegistration.RegisterAllAreas();

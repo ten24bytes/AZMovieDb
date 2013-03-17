@@ -8,14 +8,15 @@ namespace AZMovieDB.Controllers
 {
     public class MovieManagerController : Controller
     {
-        private readonly AzMovieDbEntities _db = new AzMovieDbEntities();
+        private readonly AzMovieDbEntities _movieDb = new AzMovieDbEntities();
 
         //
         // GET: /MovieManager/
 
         public ActionResult Index()
         {
-            var movies = _db.Movies.Include(m => m.Genre);
+            var movies = _movieDb.Movies.Include(m => m.Genre);
+
             return View(movies.ToList());
         }
 
@@ -24,11 +25,13 @@ namespace AZMovieDB.Controllers
 
         public ActionResult Details(int id = 0)
         {
-            Movie movie = _db.Movies.Find(id);
-            if (movie == null)
-            {
-                return HttpNotFound();
-            }
+            var movie = _movieDb.Movies
+                                .Include(a => a.Actors)
+                                .Include(g => g.Genre)
+                                .FirstOrDefault(m => m.MovieId == id);
+
+            if (movie == null) return HttpNotFound();
+
             return View(movie);
         }
 
@@ -37,7 +40,8 @@ namespace AZMovieDB.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.GenreId = new SelectList(_db.Genres, "GenreId", "Name");
+            ViewBag.GenreId = new SelectList(_movieDb.Genres, "GenreId", "Name");
+
             return View();
         }
 
@@ -49,12 +53,14 @@ namespace AZMovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Movies.Add(movie);
-                _db.SaveChanges();
+                _movieDb.Movies.Add(movie);
+                _movieDb.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.GenreId = new SelectList(_db.Genres, "GenreId", "Name", movie.GenreId);
+            ViewBag.GenreId = new SelectList(_movieDb.Genres, "GenreId", "Name", movie.GenreId);
+
             return View(movie);
         }
 
@@ -63,15 +69,14 @@ namespace AZMovieDB.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            Movie movie = _db.Movies
-                             .Include(a => a.Actors)
-                             .SingleOrDefault(m => m.MovieId == id);
+            var movie = _movieDb.Movies
+                                .Include(a => a.Actors)
+                                .SingleOrDefault(m => m.MovieId == id);
 
-            if (movie == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.GenreId = new SelectList(_db.Genres, "GenreId", "Name", movie.GenreId);
+            if (movie == null) return HttpNotFound();
+
+            ViewBag.GenreId = new SelectList(_movieDb.Genres, "GenreId", "Name", movie.GenreId);
+
             return View(movie);
         }
 
@@ -83,11 +88,12 @@ namespace AZMovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(movie).State = EntityState.Modified;
-                _db.SaveChanges();
+                _movieDb.Entry(movie).State = EntityState.Modified;
+                _movieDb.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.GenreId = new SelectList(_db.Genres, "GenreId", "Name", movie.GenreId);
+            ViewBag.GenreId = new SelectList(_movieDb.Genres, "GenreId", "Name", movie.GenreId);
+
             return View(movie);
         }
 
@@ -96,11 +102,10 @@ namespace AZMovieDB.Controllers
 
         public ActionResult Delete(int id = 0)
         {
-            Movie movie = _db.Movies.Find(id);
-            if (movie == null)
-            {
-                return HttpNotFound();
-            }
+            var movie = _movieDb.Movies.Find(id);
+
+            if (movie == null) return HttpNotFound();
+
             return View(movie);
         }
 
@@ -110,15 +115,17 @@ namespace AZMovieDB.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            Movie movie = _db.Movies.Find(id);
-            _db.Movies.Remove(movie);
-            _db.SaveChanges();
+            var movie = _movieDb.Movies.Find(id);
+
+            _movieDb.Movies.Remove(movie);
+            _movieDb.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            _db.Dispose();
+            _movieDb.Dispose();
             base.Dispose(disposing);
         }
     }

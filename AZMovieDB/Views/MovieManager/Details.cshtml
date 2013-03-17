@@ -9,21 +9,33 @@
 <fieldset>
     <legend>Movie</legend>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Genre)
+    <div class="editor-label">
+        <b>@Html.DisplayNameFor(model => model.Genre)</b>
     </div>
-    <div class="display-field">
+    <div class="editor-field">
         @Html.DisplayFor(model => model.Genre.Name)
     </div>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Title)
+    <div class="editor-label">
+        <b>@Html.DisplayNameFor(model => model.Title)</b>
     </div>
-    <div class="display-field">
+    <div class="editor-field">
         @Html.DisplayFor(model => model.Title)
+    </div>
+
+    <div class="editor-label">
+        <b>@Html.DisplayNameFor(model => model.Actors)</b>
+    </div>
+    <div class="editor-field">
+        <ul>
+            @foreach (var actor in Model.Actors)
+            {
+                <li>@actor.Name</li>
+            }
+        </ul>
     </div>
 </fieldset>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.MovieId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.MovieId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

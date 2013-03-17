@@ -1,7 +1,33 @@
-﻿@model AZMovieDB.Models.Movie
+﻿@using System.Globalization
+@model AZMovieDB.Models.Movie
 
 @{
     ViewBag.Title = "Details";
 }
 
 <h2>Movie: @Model.Title</h2>
+
+
+<fieldset>
+    <legend>Details</legend>
+
+    <div class="editor-label">
+        <b>@Html.LabelFor(model => model.GenreId, "Genre")</b>
+    </div>
+    <div class="editor-field">
+        @Model.Genre.Name
+    </div>
+
+    <div class="editor-label">
+        <b>@Html.LabelFor(model => model.Actors)</b>
+    </div>
+    <div class="editor-field">
+        <ul>
+            @foreach (var actor in Model.Actors)
+            {
+                <li>@actor.Name</li>
+            }
+        </ul>
+    </div>
+
+</fieldset>
